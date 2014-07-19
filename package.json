@@ -1,0 +1,31 @@
+{
+  "name": "webapp-base-linting",
+  "version": "0.0.1",
+  "description": "webapp-base for linting and CI",
+  "main": "index.js",
+  "scripts": {
+    "test": "gulp test",
+    "partialTest": "gulp partialTest",
+    "precommit": "npm run partialTest",
+    "prepush": "npm test"
+  },
+  "keywords": [],
+  "author": "matmuchrapna",
+  "license": "ISC",
+  "devDependencies": {
+    "gulp": "~3.8.0",
+    "shelljs": "~0.3.0",
+    "gulp-jshint": "~1.6.2",
+    "jshint-stylish": "~0.2.0",
+    "gulp-jscs": "~0.5.0",
+    "husky": "~0.5.4",
+    "gulp-csslint": "~0.1.4",
+    "gulp-csscomb": "~3.0.0-2",
+    "csscomb": "~3.0.0",
+    "pff": "~0.2.0",
+    "csslint": "~0.10.0",
+    "jscs": "~1.5.8",
+    "jshint": "~2.5.2",
+    "gift": "~0.4.2"
+  }
+}
