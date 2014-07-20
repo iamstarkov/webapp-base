@@ -5,6 +5,13 @@ var pff = require('pff');
 var git = require('gift');
 var repo = git('./');
 
+/**
+ * LINTING
+ *
+ * gulp lint -> npm run lint (prepush githook via husky)
+ * gulp partialLint -> npm run partialLint (precommit githook via husky)
+ */
+
 var jshint = require('gulp-jshint');
 var jscs = require('gulp-jscs');
 var csslint = require('gulp-csslint');
