@@ -117,29 +117,13 @@ gulp.task('version', function(done) {
       .pipe(bump({ type: answers.versionType }))
       .pipe(gulp.dest('./'));
 
-    repo.add('./package.json', function(err) {
-      if (err) throw err;
-
-      repo.commit(pff('Release version v%s', getVersion()), function(err) {
-        if (err) throw err;
-
-        /*jshint camelcase: false */
-        repo.create_tag(pff('v%s', getVersion()), function(err) {
-          if (err) throw err;
-
-          if (answers.toBePushed) {
-            repo.remote_push('origin', 'master', function(err) {
-              if (err) throw err;
-
-              console.log(pff('Version updated to v%s', getVersion()));
-              done();
-            });
-          } else {
-            done();
-          }
-        });
-        /*jshint camelcase: true */
-      });
-    });
+    shell.exec('git add package.json');
+    shell.exec('git ci -n -m ' + pff('"Release version v%s"', getVersion()));
+    shell.exec('git tag v' + getVersion());
+    if (answers.toBePushed) {
+      shell.exec('git push origin master --tags');
+      console.log('Version updated to v' + getVersion());
+    }
+    done();
   });
 });
