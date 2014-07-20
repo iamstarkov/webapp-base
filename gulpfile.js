@@ -80,3 +80,66 @@ gulp.task('csscomb', function() {
 
 gulp.task('test', ['lint']);
 gulp.task('partialTest', ['partialLint']);
+
+/**
+ * Versioning
+ *
+ * 1. Bump version with compulsory choice from major, minor and patch (default)
+ * 2. NEXT TIME: Update changelog with optional manual editing
+ * 3. Version update commit + tagging
+ * 4. Optional push to remote repo
+ */
+
+var bump = require('gulp-bump');
+var inquirer = require('inquirer');
+
+gulp.task('version', function(done) {
+  var getVersion = function() { return require('./package.json').version; };
+  var questions = [
+    {
+      type: 'list',
+      name: 'versionType',
+      message: 'What version type do you need?',
+      choices: [ 'Major', 'Minor', 'Patch' ],
+      default: 'Patch',
+      filter: function(val) { return val.toLowerCase(); }
+    },
+    {
+      type: 'confirm',
+      name: 'toBePushed',
+      message: 'Is it for pushing to remote repository?',
+      default: true
+    }
+  ];
+
+  inquirer.prompt(questions, function(answers) {
+    gulp.src('./package.json')
+      .pipe(bump({ type: answers.versionType }))
+      .pipe(gulp.dest('./'));
+
+    repo.add('./package.json', function(err) {
+      if (err) throw err;
+
+      repo.commit(pff('Release version v%s', getVersion()), function(err) {
+        if (err) throw err;
+
+        /*jshint camelcase: false */
+        repo.create_tag(pff('v%s', getVersion()), function(err) {
+          if (err) throw err;
+
+          if (answers.toBePushed) {
+            repo.remote_push('origin', 'master', function(err) {
+              if (err) throw err;
+
+              console.log(pff('Version updated to v%s', getVersion()));
+              done();
+            });
+          } else {
+            done();
+          }
+        });
+        /*jshint camelcase: true */
+      });
+    });
+  });
+});
