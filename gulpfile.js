@@ -26,42 +26,43 @@ gulp.task('lint', function() {
     .pipe(csslint.reporter());
 });
 
-gulp.task('partialLint', function() {
+gulp.task('partialLint', function(done) {
   var npmBin = './node_modules/.bin';
 
   repo.status(function(err, status) {
-      if (err) throw err;
+    if (err) throw err;
 
-      var stagedFiles = (function(statusFiles_) {
-        var stagedFiles = Object.keys(statusFiles_).filter(function(filename) {
-          return statusFiles_[filename].staged;
-        });
-
-        var isJS = function(file) { return file.slice(-3) === '.js' ; };
-        var isCSS = function(file) { return file.slice(-4) === '.css' ; };
-
-        return {
-          js: stagedFiles.filter(isJS).join(' '),
-          css: stagedFiles.filter(isCSS).join(' ')
-        };
-      })(status.files);
-
-      return [
-        { name: 'jscs',    files: 'js' },
-        { name: 'jshint',  files: 'js' },
-        { name: 'csslint', files: 'css' },
-        { name: 'csscomb', files: 'css', flags: '--lint --verbose --config ./CSScomb.json' }
-      ].forEach(function(linter) {
-        var files = stagedFiles[linter.files];
-        var flags = linter.flags || '';
-
-        if (files.length > 0) {
-          if (shell.exec(pff('%s/%s %s %s', npmBin, linter.name, flags,  files)).code !== 0) {
-            shell.exit(1);
-          }
-        }
+    var stagedFiles = (function(statusFiles_) {
+      var stagedFiles = Object.keys(statusFiles_).filter(function(filename) {
+        return statusFiles_[filename].staged;
       });
+
+      var isJS = function(file) { return file.slice(-3) === '.js' ; };
+      var isCSS = function(file) { return file.slice(-4) === '.css' ; };
+
+      return {
+        js: stagedFiles.filter(isJS).join(' '),
+        css: stagedFiles.filter(isCSS).join(' ')
+      };
+    })(status.files);
+
+    [
+      { name: 'jscs',    files: 'js' },
+      { name: 'jshint',  files: 'js' },
+      { name: 'csslint', files: 'css' },
+      { name: 'csscomb', files: 'css', flags: '--lint --verbose --config ./CSScomb.json' }
+    ].forEach(function(linter) {
+      var files = stagedFiles[linter.files];
+      var flags = linter.flags || '';
+
+      if (files.length > 0) {
+        if (shell.exec(pff('%s/%s %s %s', npmBin, linter.name, flags,  files)).code !== 0) {
+          shell.exit(1);
+          done();
+        }
+      }
     });
+  });
 });
 
 gulp.task('csscomb', function() {
