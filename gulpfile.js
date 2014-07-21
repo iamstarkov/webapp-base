@@ -92,9 +92,11 @@ gulp.task('partialTest', ['partialLint']);
 
 var bump = require('gulp-bump');
 var inquirer = require('inquirer');
+var getVersion = function() { return require('./package.json').version; };
 
-gulp.task('version', function(done) {
-  var getVersion = function() { return require('./package.json').version; };
+var answers;
+
+gulp.task('questions', function(done) {
   var questions = [
     {
       type: 'list',
@@ -112,18 +114,27 @@ gulp.task('version', function(done) {
     }
   ];
 
-  inquirer.prompt(questions, function(answers) {
-    gulp.src('./package.json')
-      .pipe(bump({ type: answers.versionType }))
-      .pipe(gulp.dest('./'));
-
-    shell.exec('git add package.json');
-    shell.exec('git ci -n -m ' + pff('"Release version v%s"', getVersion()));
-    shell.exec('git tag v' + getVersion());
-    if (answers.toBePushed) {
-      shell.exec('git push origin master --tags');
-      console.log('Version updated to v' + getVersion());
-    }
+  inquirer.prompt(questions, function(ans) {
+    answers = ans;
     done();
   });
 });
+
+gulp.task('bump', ['questions'], function() {
+  return gulp.src('./package.json')
+      .pipe(bump({ type: answers.versionType }))
+      .pipe(gulp.dest('./'));
+});
+
+gulp.task('git', ['bump'], function(done) {
+  shell.exec('git add package.json');
+  shell.exec('git ci -n -m ' + pff('"Release version v%s"', getVersion()));
+  shell.exec('git tag v' + getVersion());
+  if (answers.toBePushed) {
+    shell.exec('git push origin master --tags');
+    console.log('Version updated to v' + getVersion());
+  }
+  done();
+});
+
+gulp.task('version', ['git']);
