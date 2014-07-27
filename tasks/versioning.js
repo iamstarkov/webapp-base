@@ -2,6 +2,7 @@
 
 var gulp = require('gulp');
 var shell = require('shelljs');
+var pff = require('pff');
 
 /**
  * Versioning
