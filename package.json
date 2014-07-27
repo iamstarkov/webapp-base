@@ -1,7 +1,7 @@
 {
-  "name": "webapp-base-linting",
+  "name": "webapp-base",
   "version": "0.0.2",
-  "description": "webapp-base for linting and CI",
+  "description": "base for webapp",
   "main": "index.js",
   "scripts": {
     "test": "gulp test",
