@@ -43,6 +43,10 @@ gulp.task('partialLint', function(done) {
     var stagedFiles = (function(statusFiles_) {
       var stagedFiles = Object.keys(statusFiles_).filter(function(filename) {
         return statusFiles_[filename].staged;
+      }).map(function(filename) {
+        return (statusFiles_[filename].type !== 'RM')
+          ? filename
+          : filename.split(' -> ')[1];
       });
 
       var isJS = function(file) { return file.slice(-3) === '.js' ; };
