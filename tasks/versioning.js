@@ -14,7 +14,7 @@ var shell = require('shelljs');
 
 var bump = require('gulp-bump');
 var inquirer = require('inquirer');
-var getVersion = function() { return require('./package.json').version; };
+var getVersion = function() { return require('./../package.json').version; };
 
 var answers;
 
