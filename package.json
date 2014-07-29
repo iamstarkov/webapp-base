@@ -21,14 +21,14 @@
     "husky": "~0.5.4",
     "gulp-csslint": "~0.1.4",
     "gulp-csscomb": "~3.0.0-2",
-    "csscomb": "~3.0.0",
     "pff": "~0.2.0",
     "csslint": "~0.10.0",
-    "jscs": "~1.5.8",
-    "jshint": "~2.5.2",
     "gift": "~0.4.2",
     "gulp-bump": "~0.1.10",
     "inquirer": "~0.5.1",
-    "require-dir": "~0.1.0"
+    "require-dir": "~0.1.0",
+    "vinyl-git": "0.0.3",
+    "gulp-filter": "~1.0.0",
+    "lazypipe": "~0.2.2"
   }
 }
