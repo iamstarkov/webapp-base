@@ -8,41 +8,33 @@
  */
 
 var gulp = require('gulp');
+var git = require('vinyl-git');
+var filter = require('gulp-filter');
+var args = require('yargs').boolean('p').alias('p', 'partial').argv;
+
 var jshint = require('gulp-jshint');
 var jscs = require('gulp-jscs');
 var csslint = require('gulp-csslint');
 var csscomb = require('gulp-csscomb');
-
-var git = require('vinyl-git');
-var filter = require('gulp-filter');
-var lazypipe = require('lazypipe');
 
 var paths = {
   js: ['*.js', 'tasks/*.js', 'js/**/*.js'],
   css: ['css/**/*.css']
 };
 
-var lintJs = lazypipe()
-  .pipe(jscs)
-  .pipe(jshint)
-  .pipe(jshint.reporter, 'jshint-stylish');
-
-var lintCss = lazypipe()
-  .pipe(csslint)
-  .pipe(csslint.reporter);
-
 gulp.task('lint', function() {
-  gulp.src(paths.js)
-    .pipe(lintJs());
-  gulp.src(paths.css)
-    .pipe(lintCss());
-});
+  var getFiles = function(src) {
+    return !args.partial ? gulp.src(src) : git.staged().pipe(filter(src));
+  };
 
-gulp.task('partialLint', function() {
-  git.staged().pipe(filter(paths.js))
-    .pipe(lintJs());
-  git.staged().pipe(filter(paths.css))
-    .pipe(lintCss());
+  getFiles(paths.js)
+    .pipe(jscs())
+    .pipe(jshint())
+    .pipe(jshint.reporter('jshint-stylish'));
+
+  getFiles(paths.css)
+    .pipe(csslint())
+    .pipe(csslint.reporter());
 });
 
 gulp.task('csscomb', function() {
