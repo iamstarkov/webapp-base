@@ -23,16 +23,16 @@ var paths = {
 };
 
 gulp.task('lint', function() {
-  var getFiles = function(src) {
+  var sources = function(src) {
     return !args.partial ? gulp.src(src) : git.staged().pipe(filter(src));
   };
 
-  getFiles(paths.js)
+  sources(paths.js)
     .pipe(jscs())
     .pipe(jshint())
     .pipe(jshint.reporter('jshint-stylish'));
 
-  getFiles(paths.css)
+  sources(paths.css)
     .pipe(csslint())
     .pipe(csslint.reporter());
 });
