@@ -18,8 +18,8 @@ var csslint = require('gulp-csslint');
 var csscomb = require('gulp-csscomb');
 
 var paths = {
-  js: ['*.js', 'tasks/*.js', 'js/**/*.js'],
-  css: ['css/**/*.css']
+  scripts: ['*.js', 'tasks/*.js', 'js/**/*.js'],
+  styles: ['css/**/*.css']
 };
 
 gulp.task('lint', function() {
@@ -27,18 +27,18 @@ gulp.task('lint', function() {
     return !args.partial ? gulp.src(src) : git.staged().pipe(filter(src));
   };
 
-  sources(paths.js)
+  sources(paths.scripts)
     .pipe(jscs())
     .pipe(jshint())
     .pipe(jshint.reporter('jshint-stylish'));
 
-  sources(paths.css)
+  sources(paths.styles)
     .pipe(csslint())
     .pipe(csslint.reporter());
 });
 
 gulp.task('csscomb', function() {
-  return gulp.src(paths.css)
+  return gulp.src(paths.styles)
     .pipe(csscomb('./CSScomb.json'))
     .pipe(gulp.dest('./css/'));
 });
