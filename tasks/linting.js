@@ -30,7 +30,8 @@ gulp.task('lint', function() {
   sources(paths.scripts)
     .pipe(jscs())
     .pipe(jshint())
-    .pipe(jshint.reporter('jshint-stylish'));
+    .pipe(jshint.reporter('jshint-stylish'))
+    .pipe(jshint.reporter('fail'));
 
   sources(paths.styles)
     .pipe(csslint())
