@@ -40,6 +40,6 @@ gulp.task('lint', function() {
 
 gulp.task('csscomb', function() {
   return gulp.src(paths.styles)
-    .pipe(csscomb('./CSScomb.json'))
+    .pipe(csscomb('.csscomb.json'))
     .pipe(gulp.dest('./css/'));
 });
